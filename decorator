@@ -1,1 +1,105 @@
+// decorator/shapes/ShapeDecoratorDemo.java
+package decorator.shapes;
 
+public interface Shape {
+    void draw();
+    double computeCost();
+}
+
+public class Rectangle implements Shape {
+    private double price = 10.0;
+    
+    @Override
+    public void draw() {
+        System.out.println("Shape: Rectangle");
+    }
+    
+    @Override
+    public double computeCost() {
+        return price;
+    }
+}
+
+public class Circle implements Shape {
+    private double price = 15.0;
+    
+    @Override
+    public void draw() {
+        System.out.println("Shape: Circle");
+    }
+    
+    @Override
+    public double computeCost() {
+        return price;
+    }
+}
+
+public abstract class ShapeDecorator implements Shape {
+    protected Shape decoratedShape;
+    protected double decorationPrice;
+    
+    public ShapeDecorator(Shape decoratedShape, double decorationPrice) {
+        this.decoratedShape = decoratedShape;
+        this.decorationPrice = decorationPrice;
+    }
+    
+    public void draw() {
+        decoratedShape.draw();
+    }
+    
+    public double computeCost() {
+        return decoratedShape.computeCost() + decorationPrice;
+    }
+}
+
+public class RedShapeDecorator extends ShapeDecorator {
+    public RedShapeDecorator(Shape decoratedShape) {
+        super(decoratedShape, 5.0);
+    }
+    
+    @Override
+    public void draw() {
+        decoratedShape.draw();
+        setRedBorder();
+        System.out.println("Cost: " + computeCost());
+    }
+    
+    private void setRedBorder() {
+        System.out.println("Border Color: Red");
+    }
+}
+
+public class ShadowShapeDecorator extends ShapeDecorator {
+    public ShadowShapeDecorator(Shape decoratedShape) {
+        super(decoratedShape, 7.0);
+    }
+    
+    @Override
+    public void draw() {
+        decoratedShape.draw();
+        addShadow();
+        System.out.println("Cost: " + computeCost());
+    }
+    
+    private void addShadow() {
+        System.out.println("Adding shadow effect");
+    }
+}
+
+public class ShapeDecoratorDemo {
+    public static void main(String[] args) {
+        Shape circle = new Circle();
+        Shape redCircle = new RedShapeDecorator(new Circle());
+        Shape redRectangle = new RedShapeDecorator(new Rectangle());
+        Shape shadowRedCircle = new ShadowShapeDecorator(new RedShapeDecorator(new Circle()));
+        
+        System.out.println("Simple shapes:");
+        circle.draw();
+        System.out.println("Cost: " + circle.computeCost());
+        
+        System.out.println("\nDecorated shapes:");
+        redCircle.draw();
+        redRectangle.draw();
+        shadowRedCircle.draw();
+    }
+}
